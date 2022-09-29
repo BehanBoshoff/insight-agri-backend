@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from core.schemas.job import JobCreate
 from core.schemas.job import ShowJob
 from db.repository.job import create_new_job
+from db.repository.job import delete_job_by_id
 from db.repository.job import list_jobs
 from db.repository.job import retreive_job
 from db.repository.job import update_job_by_id
@@ -55,3 +56,14 @@ def update_job(id: int, job: JobCreate, db: Session = Depends(get_db)):
         )
 
     return {"msg": "Successfully updated data."}
+
+
+@router.delete("/delete/{id}")
+def delete_job(id: int, db: Session = Depends(get_db)):
+    current_user_id = 1
+    message = delete_job_by_id(id=id, db=db, owner_id=current_user_id)
+    if not message:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Job with id {id} not found"
+        )
+    return {"msg": "Successfully deleted."}
