@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from db.config import settings
+
 from api.base import api_router
-from db.session import engine
 from db.base import Base
+from db.config import settings
+from db.session import engine
 
 
 def include_router(app):
@@ -13,6 +14,7 @@ def include_router(app):
 def configure_static(app):
     # app.mount("/static", StaticFiles(directory="static"), name="static")
     print("...")
+
 
 def create_tables():
     Base.metadata.create_all(bind=engine)
@@ -27,4 +29,3 @@ def start_application():
 
 
 app = start_application()
-

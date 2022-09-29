@@ -13,3 +13,4 @@ pydantic[email]
 passlib[bcrypt]
 pytest
 requests
+pre-commit

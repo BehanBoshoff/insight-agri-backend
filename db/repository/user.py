@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
+from core.auth.hashing import Hasher
 from core.schemas.user import UserCreate
 from db.models.user import User
-from core.auth.hashing import Hasher
 
 
 def create_new_user(user: UserCreate, db: Session):
@@ -11,8 +11,8 @@ def create_new_user(user: UserCreate, db: Session):
         email=user.email,
         hashed_password=Hasher.get_password_hash(user.password),
         is_active=True,
-        is_superuser=False
-        )
+        is_superuser=False,
+    )
     db.add(user)
     db.commit()
     db.refresh(user)
