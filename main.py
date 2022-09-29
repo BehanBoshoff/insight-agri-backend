@@ -1,16 +1,31 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Haazit, {name}')  # Press ⌘F8 to toggle the breakpoint.
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from db.config import settings
+# from api.v1.general_pages.route_homepage import general_pages_router
+from db.session import engine
+from db.base import Base
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def include_router(app):
+    # app.include_router(general_pages_router)
+    print("...")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+def configure_static(app):
+    # app.mount("/static", StaticFiles(directory="static"), name="static")
+    print("...")
+
+def create_tables():
+    Base.metadata.create_all(bind=engine)
+
+
+def start_application():
+    app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
+    include_router(app)
+    configure_static(app)
+    create_tables()  # new
+    return app
+
+
+app = start_application()
+

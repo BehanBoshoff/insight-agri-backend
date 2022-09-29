@@ -1,7 +1,13 @@
 fastapi
 uvicorn
-sqlalchemy
 passlib
 bcrypt
 python-jose
 python-multipart
+jinja2
+aiofiles
+sqlalchemy
+psycopg2
+python-dotenv
+pydantic[email]
+passlib[bcrypt]
