@@ -4,31 +4,25 @@ from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import status
+from fastapi.encoders import jsonable_encoder
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from jose import JWTError
+from pydantic import json
 from sqlalchemy.orm import Session
+from starlette.responses import JSONResponse
 
-from core.auth.hashing import Hasher
+from core.auth.security import authenticate_user
 from core.auth.security import create_access_token
 from core.schemas.token import Token
+from core.schemas.user import ShowUser
 from db.config import settings
 from db.repository.login import get_user
 from db.session import get_db
 
-
 router = APIRouter()
-
-
-def authenticate_user(username: str, password: str, db: Session):
-    user = get_user(username=username, db=db)
-    print(user)
-    if not user:
-        return False
-    if not Hasher.verify_password(password, user.hashed_password):
-        return False
-    return user
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 
 
 @router.post("/token", response_model=Token)
@@ -45,12 +39,15 @@ def login_for_access_token(
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    resp = {
+        "authToken": access_token,
+        "refreshToken": access_token,
+        "expires_in": str(access_token_expires),
+    }
+    return JSONResponse(content=resp)
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
-
-
+@router.get("/me", response_model=ShowUser)
 def get_current_user_from_token(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ):
@@ -59,6 +56,7 @@ def get_current_user_from_token(
         detail="Could not validate credentials",
     )
     try:
+        print(token)
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
@@ -71,4 +69,4 @@ def get_current_user_from_token(
     user = get_user(username=username, db=db)
     if user is None:
         raise credentials_exception
-    return user
+    return JSONResponse(jsonable_encoder(user))
