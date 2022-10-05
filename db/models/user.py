@@ -16,4 +16,16 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
+    pic = Column(String, nullable=True)
+    fullname = Column(String, nullable=True)
+    firstname = Column(String, nullable=True)
+    lastname = Column(String, nullable=True)
+    occupation = Column(String, nullable=True)
+    company_name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    communication = Column(Boolean, nullable=True)
     jobs = relationship("Job", back_populates="owner")
+    address = relationship("Address", back_populates="user", uselist=False)
+    social_networks = relationship(
+        "SocialNetworks", back_populates="user", uselist=False
+    )
