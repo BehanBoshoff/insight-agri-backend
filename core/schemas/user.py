@@ -27,6 +27,7 @@ class UserCreate(BaseModel):
 
 
 class ShowUser(BaseModel):
+    id: int
     username: str
     email: EmailStr
     is_active: Optional[bool]

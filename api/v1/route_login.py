@@ -60,13 +60,13 @@ def get_current_user_from_token(
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
-        username: str = payload.get("sub")
-        print("username/email extracted is ", username)
-        if username is None:
+        email: str = payload.get("sub")
+        print("email extracted is ", email)
+        if email is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user = get_user(username=username, db=db)
+    user = get_user(email=email, db=db)
     if user is None:
         raise credentials_exception
     return JSONResponse(jsonable_encoder(user))

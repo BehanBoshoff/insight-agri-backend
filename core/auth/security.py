@@ -37,8 +37,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def authenticate_user(username: str, password: str, db: Session):
-    user = get_user(username=username, db=db)
+def authenticate_user(email: str, password: str, db: Session):
+    user = get_user(email=email, db=db)
     if not user:
         return False
     if not Hasher.verify_password(password, user.hashed_password):

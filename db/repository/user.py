@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from core.auth.hashing import Hasher
+from core.schemas.user import ShowUser
 from core.schemas.user import UserCreate
 from db.models.address import Address
 from db.models.social_networks import SocialNetworks
