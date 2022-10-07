@@ -1,43 +1,44 @@
+from typing import List
+
 from sqlalchemy.orm import Session
 
+from .address import get_addresses
+from .address import get_base_address
 from core.auth.hashing import Hasher
 from core.schemas.user import ShowUser
 from core.schemas.user import UserCreate
 from db.models.address import Address
-from db.models.social_networks import SocialNetworks
 from db.models.user import User
+from db.models.user_address import UserAddress
 
 
-def create_new_user(user: UserCreate, db: Session):
-    address = Address(
-        addressLine=user.address.addressLine,
-        city=user.address.city,
-        province=user.address.province,
-        postCode=user.address.postCode,
-    )
-    social_networks = SocialNetworks(
-        linkedIn=user.social_networks.linkedIn,
-        facebook=user.social_networks.facebook,
-        twitter=user.social_networks.twitter,
-        instagram=user.social_networks.instagram,
-    )
+def create_new_user(user_create: UserCreate, db: Session):
+    blank_address: Address = get_base_address(db)
+    user_address = UserAddress()
+    if blank_address:
+        user_address.address = blank_address
+    else:
+        user_address.address = Address(
+            addressLine="", city="", province="", postCode=""
+        )
+
     user = User(
-        username=user.username,
-        email=user.email,
-        hashed_password=Hasher.get_password_hash(user.password),
+        username=user_create.username,
+        email=user_create.email,
+        hashed_password=Hasher.get_password_hash(user_create.password),
         is_active=True,
-        is_superuser=user.is_superuser,
-        pic=user.pic,
-        fullname=user.fullname,
-        firstname=user.firstname,
-        lastname=user.lastname,
-        occupation=user.occupation,
-        company_name=user.company_name,
-        phone=user.phone,
-        communication=user.communication,
-        address=address,
-        social_networks=social_networks,
+        is_superuser=user_create.is_superuser,
+        pic=user_create.pic,
+        fullname=user_create.fullname,
+        firstname=user_create.firstname,
+        lastname=user_create.lastname,
+        occupation=user_create.occupation,
+        company_name=user_create.company_name,
+        phone=user_create.phone,
+        communication=user_create.communication,
     )
+    user.addresses.append(user_address)
+
     db.add(user)
     db.commit()
     db.refresh(user)

@@ -5,7 +5,6 @@ from pydantic import BaseModel
 from pydantic import EmailStr
 
 from .address import AddressBase
-from .social_networks import SocialNetworksBase
 
 
 class UserCreate(BaseModel):
@@ -21,8 +20,6 @@ class UserCreate(BaseModel):
     occupation: Optional[str]
     company_name: Optional[str]
     phone: Optional[str]
-    address: AddressBase
-    social_networks: SocialNetworksBase
     communication: Optional[bool]
 
 
@@ -39,8 +36,7 @@ class ShowUser(BaseModel):
     occupation: Optional[str]
     company_name: Optional[str]
     phone: Optional[str]
-    address: AddressBase
-    social_networks: SocialNetworksBase
+    # addresses: List[AddressBase]
     communication: Optional[bool]
 
     class Config:  # tells pydantic to convert even non dict obj to json

@@ -13,5 +13,4 @@ class Address(Base):
     city = Column(String, nullable=True)
     province = Column(String, nullable=True)
     postCode = Column(String, nullable=True)
-    user_id = Column(Integer, ForeignKey("user.id"))
-    user = relationship("User", back_populates="address")
+    users = relationship("UserAddress", back_populates="address")

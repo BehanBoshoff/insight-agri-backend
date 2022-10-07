@@ -24,8 +24,4 @@ class User(Base):
     company_name = Column(String, nullable=True)
     phone = Column(String, nullable=True)
     communication = Column(Boolean, nullable=True)
-    jobs = relationship("Job", back_populates="owner")
-    address = relationship("Address", back_populates="user", uselist=False)
-    social_networks = relationship(
-        "SocialNetworks", back_populates="user", uselist=False
-    )
+    addresses = relationship("UserAddress", back_populates="user")
